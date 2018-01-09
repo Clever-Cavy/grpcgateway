@@ -1,4 +1,5 @@
 [![Build status](https://api.travis-ci.org/Clever-Cavy/grpcgateway.svg?branch=master)](https://travis-ci.org/Clever-Cavy/grpcgateway)
+[![Dependencies](https://app.updateimpact.com/badge/949261008239726592/grpcgateway.svg?config=compile)](https://app.updateimpact.com/latest/949261008239726592/grpcgateway)
 [![License](https://img.shields.io/:license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![GRPCGatewayGenerator](https://api.bintray.com/packages/clever-cavy/grpcgateway/grpcgatewaygenerator/images/download.svg) ](https://bintray.com/clever-cavy/grpcgateway/grpcgatewaygenerator/_latestVersion)
 [![GRPCGatewayRuntime](https://api.bintray.com/packages/clever-cavy/grpcgateway/grpcgatewayruntime/images/download.svg) ](https://bintray.com/clever-cavy/grpcgateway/grpcgatewayruntime/_latestVersion)
