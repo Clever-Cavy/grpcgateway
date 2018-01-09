@@ -23,7 +23,7 @@ You can do it by adding a `protoc.sbt` file into your `project` folder with the 
 ```scala
 addSbtPlugin("com.thesamet" % "sbt-protoc" % "0.99.13")
 
-resolvers += Resolver.bintrayRepo("clever-cavy", "grpcgateway")
+resolvers += Resolver.bintrayRepo("clever-cavy", "maven")
 
 libraryDependencies ++= Seq(
   "com.trueaccord.scalapb" %% "compilerplugin" % "0.6.7",
@@ -45,7 +45,7 @@ PB.targets in Compile := Seq(
   grpcgateway.generators.GatewayGenerator -> (sourceManaged in Compile).value
 )
 
-resolvers += Resolver.bintrayRepo("clever-cavy", "grpcgateway")
+resolvers += Resolver.bintrayRepo("clever-cavy", "maven")
 
 libraryDependencies += "clever-cavy" %% "grpcgatewayruntime" % "0.0.8" % "compile,protobuf"
 ```
