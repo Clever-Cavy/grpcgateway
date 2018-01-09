@@ -1,8 +1,9 @@
-[![Build status](https://api.travis-ci.org/btlines/grpcgateway.svg?branch=master)](https://travis-ci.org/btlines/grpcgateway)
-[![Dependencies](https://app.updateimpact.com/badge/852442212779298816/grpcgateway.svg?config=compile)](https://app.updateimpact.com/latest/852442212779298816/grpcgateway)
+[![Build status](https://api.travis-ci.org/Clever-Cavy/grpcgateway.svg?branch=master)](https://travis-ci.org/Clever-Cavy/grpcgateway)
 [![License](https://img.shields.io/:license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![GRPCGatewayGenerator](https://api.bintray.com/packages/beyondthelines/maven/grpcgatewaygenerator/images/download.svg) ](https://bintray.com/beyondthelines/maven/grpcgatewaygenerator/_latestVersion)
-[![GRPCGatewayRuntime](https://api.bintray.com/packages/beyondthelines/maven/grpcgatewayruntime/images/download.svg) ](https://bintray.com/beyondthelines/maven/grpcgatewayruntime/_latestVersion)
+[![GRPCGatewayGenerator](https://api.bintray.com/packages/clever-cavy/grpcgateway/grpcgatewaygenerator/images/download.svg) ](https://bintray.com/clever-cavy/grpcgateway/grpcgatewaygenerator/_latestVersion)
+[![GRPCGatewayRuntime](https://api.bintray.com/packages/clever-cavy/grpcgateway/grpcgatewayruntime/images/download.svg) ](https://bintray.com/clever-cavy/grpcgateway/grpcgatewayruntime/_latestVersion)
+
+Forked from https://github.com/btlines/grpcgateway
 
 # GRPC Gateway
 
@@ -21,11 +22,11 @@ You can do it by adding a `protoc.sbt` file into your `project` folder with the 
 ```scala
 addSbtPlugin("com.thesamet" % "sbt-protoc" % "0.99.13")
 
-resolvers += Resolver.bintrayRepo("beyondthelines", "maven")
+resolvers += Resolver.bintrayRepo("clever-cavy", "grpcgateway")
 
 libraryDependencies ++= Seq(
   "com.trueaccord.scalapb" %% "compilerplugin" % "0.6.7",
-  "beyondthelines"         %% "grpcgatewaygenerator" % "0.0.8"
+  "clever-cavy"         %% "grpcgatewaygenerator" % "0.0.8"
 )
 ```
 
@@ -43,9 +44,9 @@ PB.targets in Compile := Seq(
   grpcgateway.generators.GatewayGenerator -> (sourceManaged in Compile).value
 )
 
-resolvers += Resolver.bintrayRepo("beyondthelines", "maven")
+resolvers += Resolver.bintrayRepo("clever-cavy", "grpcgateway")
 
-libraryDependencies += "beyondthelines" %% "grpcgatewayruntime" % "0.0.8" % "compile,protobuf"
+libraryDependencies += "clever-cavy" %% "grpcgatewayruntime" % "0.0.8" % "compile,protobuf"
 ```
 
 ### Usage

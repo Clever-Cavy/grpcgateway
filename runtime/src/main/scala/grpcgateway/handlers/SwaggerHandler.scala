@@ -12,9 +12,12 @@ import io.netty.util.CharsetUtil
 
 object SwaggerHandler {
   val SwaggerUiPath: Path   = Paths.get("META-INF/resources/webjars/swagger-ui/3.5.0")
-  val SpecsPrefix: Path     = Paths.get("/specs/")
-  val DocsPrefix: Path      = Paths.get("/docs/")
-  val DocsLandingPage: Path = Paths.get("/docs/index.html")
+  val SpecsPath: Path       = Paths.get("specs")
+
+  val ApiPrefix: Path       = Paths.get("/api/")
+  val SpecsPrefix: Path     = Paths.get("/api/specs/")
+  val DocsPrefix: Path      = Paths.get("/api/docs/")
+  val DocsLandingPage: Path = Paths.get("/api/docs/swagger")
   val RootPath: Path        = Paths.get("/")
 }
 
@@ -26,16 +29,15 @@ class SwaggerHandler(services: Seq[GrpcGatewayHandler]) extends ChannelInboundHa
       val queryString = new QueryStringDecoder(req.uri())
       val path        = Paths.get(queryString.path())
       val res = path match {
-        case RootPath        => Some(createRedirectResponse(req, DocsLandingPage))
-        case DocsPrefix      => Some(createRedirectResponse(req, DocsLandingPage))
+        case RootPath | DocsPrefix | ApiPrefix  => Some(createRedirectResponse(req, DocsLandingPage))
         case DocsLandingPage => Some(createStringResponse(req, indexPage.toString()))
         case p if p.startsWith(DocsPrefix) =>
           // swagger UI loading its own resources
-          val resourcePath = SwaggerUiPath.resolve(RootPath.relativize(path).subpath(1, path.getNameCount))
+          val resourcePath = SwaggerUiPath.resolve(RootPath.relativize(path).subpath(DocsPrefix.getNameCount, path.getNameCount))
           Some(createResourceResponse(req, resourcePath))
         case p if p.startsWith(SpecsPrefix) =>
           // swagger UI loading up spec file
-          Some(createResourceResponse(req, RootPath.relativize(path)))
+          Some(createResourceResponse(req, SpecsPath.resolve(RootPath.relativize(path).subpath(SpecsPrefix.getNameCount, path.getNameCount))))
         case _ => None
       }
       res match {
@@ -86,7 +88,7 @@ class SwaggerHandler(services: Seq[GrpcGatewayHandler]) extends ChannelInboundHa
   private val mimeTypes = new MimetypesFileTypeMap()
   mimeTypes.addMimeTypes("image/png png PNG")
   mimeTypes.addMimeTypes("text/css css CSS")
-  private val serviceUrls  = services.map(s => s"{url: '/specs/${s.name}.yml', name: '${s.name}'}").mkString(", ")
+  private val serviceUrls  = services.map(s => s"{url: '/api/specs/${s.name}.yml', name: '${s.name}'}").mkString(", ")
   private val serviceNames = services.map(s => s.name).mkString(", ")
   private val indexPage =
     <html lang="en">
