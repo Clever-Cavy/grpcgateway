@@ -27,7 +27,7 @@ resolvers += Resolver.bintrayRepo("clever-cavy", "maven")
 
 libraryDependencies ++= Seq(
   "com.trueaccord.scalapb" %% "compilerplugin" % "0.6.7",
-  "clever-cavy"         %% "grpcgatewaygenerator" % "0.0.8"
+  "clever-cavy"         %% "grpcgatewaygenerator" % "0.0.9"
 )
 ```
 
@@ -47,7 +47,7 @@ PB.targets in Compile := Seq(
 
 resolvers += Resolver.bintrayRepo("clever-cavy", "maven")
 
-libraryDependencies += "clever-cavy" %% "grpcgatewayruntime" % "0.0.8" % "compile,protobuf"
+libraryDependencies += "clever-cavy" %% "grpcgatewayruntime" % "0.0.9" % "compile,protobuf"
 ```
 
 ### Usage

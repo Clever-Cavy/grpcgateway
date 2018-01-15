@@ -98,6 +98,7 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
       .indent
       .add(
         "val queryString = new QueryStringDecoder(uri)",
+        "val params = queryString.parameters().asScala",
         "(method.name, queryString.path) match {"
       )
       .indent
@@ -193,9 +194,11 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
     printer
       .print(d.getFields.asScala) {
         case (p, f) =>
+          val head = if (f.isOptional && f.getFile.isProto2) "headOption" else "head"
           f.getJavaType match {
             case JavaType.MESSAGE =>
-              p.add(s"val ${inputName(f, prefix)} = {")
+              p.add(s"val ${inputName(f, prefix)} = ")
+                .add("{")
                 .indent
                 .call(generateInputFromQueryString(f.getMessageType, s"$prefix.${f.getJsonName}"))
                 .outdent
@@ -203,39 +206,22 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
             case JavaType.ENUM =>
               p.add(s"val ${inputName(f, prefix)} = ")
                 .addIndented(
-                  s"""${f.getName}.valueOf(queryString.parameters().get("$prefix${f.getJsonName}").asScala.head)"""
+                  s"""${f.getName}.valueOf(params("$prefix${f.getJsonName}").asScala.$head)"""
                 )
-            case JavaType.BOOLEAN =>
+            case other =>
+              val mapper = other match {
+                  case JavaType.BOOLEAN => ".map(_.toBoolean)"
+                  case JavaType.DOUBLE => ".map(_.toDouble)"
+                  case JavaType.FLOAT => ".map(_.toFloat)"
+                  case JavaType.INT => ".map(_.toInt)"
+                  case JavaType.LONG => ".map(_.toLong)"
+                  case JavaType.STRING => ""
+                  case jt => throw new Exception(s"Unknown java type: $jt")
+              }
               p.add(s"val ${inputName(f, prefix)} = ")
                 .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head.toBoolean"""
-                )
-            case JavaType.DOUBLE =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head.toDouble"""
-                )
-            case JavaType.FLOAT =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head.toFloat"""
-                )
-            case JavaType.INT =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head.toInt"""
-                )
-            case JavaType.LONG =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head.toLong"""
-                )
-            case JavaType.STRING =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""queryString.parameters().get("$prefix${f.getJsonName}").asScala.head"""
-                )
-            case jt => throw new Exception(s"Unknown java type: $jt")
+                s"""params("$prefix${f.getJsonName}").asScala$mapper.$head"""
+              )
           }
       }
       .add(s"${d.getName}($args)")
