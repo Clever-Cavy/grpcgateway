@@ -1,7 +1,7 @@
 import com.trueaccord.scalapb.compiler.Version.{grpcJavaVersion, scalapbVersion}
 
 organization in ThisBuild := "clever-cavy"
-version in ThisBuild := "0.0.10"
+version in ThisBuild := "0.0.11"
 licenses in ThisBuild := ("MIT", url("http://opensource.org/licenses/MIT")) :: Nil
 bintrayOrganization in ThisBuild := Some("clever-cavy")
 bintrayPackageLabels in ThisBuild := Seq("scala", "protobuf", "grpc")

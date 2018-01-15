@@ -203,13 +203,9 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
                 .call(generateInputFromQueryString(f.getMessageType, s"$prefix.${f.getJsonName}"))
                 .outdent
                 .add("}")
-            case JavaType.ENUM =>
-              p.add(s"val ${inputName(f, prefix)} = ")
-                .addIndented(
-                  s"""${f.getName}.valueOf(params("$prefix${f.getJsonName}").asScala.$head)"""
-                )
             case other =>
               val mapper = other match {
+                  case JavaType.ENUM => s".flatMap(${f.getEnumType.getName}.fromName)"
                   case JavaType.BOOLEAN => ".map(_.toBoolean)"
                   case JavaType.DOUBLE => ".map(_.toDouble)"
                   case JavaType.FLOAT => ".map(_.toFloat)"
@@ -220,7 +216,7 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
               }
               p.add(s"val ${inputName(f, prefix)} = ")
                 .addIndented(
-                s"""params("$prefix${f.getJsonName}").asScala$mapper.$head"""
+                s"""params.get("$prefix${f.getJsonName}").map(_.asScala$mapper.head).$head"""
               )
           }
       }
