@@ -3,7 +3,7 @@ package grpcgateway.handlers
 import java.nio.charset.StandardCharsets
 
 import com.trueaccord.scalapb.GeneratedMessage
-import com.trueaccord.scalapb.json.JsonFormat
+import com.trueaccord.scalapb.json.Printer
 import io.grpc.{ ManagedChannel, StatusException, StatusRuntimeException }
 import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.{ ChannelFutureListener, ChannelHandlerContext, ChannelInboundHandlerAdapter }
@@ -12,7 +12,7 @@ import io.netty.handler.codec.http._
 import scala.concurrent.{ ExecutionContext, Future }
 
 @Sharable
-abstract class GrpcGatewayHandler(channel: ManagedChannel)(implicit ec: ExecutionContext) extends ChannelInboundHandlerAdapter {
+abstract class GrpcGatewayHandler(channel: ManagedChannel, printer: Printer = new Printer(true))(implicit ec: ExecutionContext) extends ChannelInboundHandlerAdapter {
 
   def name: String
 
@@ -32,7 +32,7 @@ abstract class GrpcGatewayHandler(channel: ManagedChannel)(implicit ec: Executio
           val body = req.content().toString(StandardCharsets.UTF_8)
 
           unaryCall(req.method(), req.uri(), body)
-            .map(JsonFormat.toJsonString)
+            .map(printer.print)
             .map(json => {
               buildFullHttpResponse(
                 requestMsg = req,

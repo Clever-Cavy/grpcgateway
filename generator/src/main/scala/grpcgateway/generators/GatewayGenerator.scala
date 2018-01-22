@@ -50,6 +50,7 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
       .add(
         "import _root_.com.trueaccord.scalapb.GeneratedMessage",
         "import _root_.com.trueaccord.scalapb.json.JsonFormat",
+        "import _root_.com.trueaccord.scalapb.json.Printer",
         "import _root_.grpcgateway.handlers._",
         "import _root_.io.grpc._",
         "import _root_.io.netty.handler.codec.http.{HttpMethod, QueryStringDecoder}"
@@ -70,9 +71,9 @@ object GatewayGenerator extends protocbridge.ProtocCodeGenerator with Descriptor
   }
 
   private def generateService(service: ServiceDescriptor): PrinterEndo =
-    _.add(s"class ${service.getName}Handler(channel: ManagedChannel)(implicit ec: ExecutionContext)").indent
+    _.add(s"class ${service.getName}Handler(channel: ManagedChannel, printer: Printer = new Printer(true))(implicit ec: ExecutionContext)").indent
       .add(
-        "extends GrpcGatewayHandler(channel)(ec) {",
+        "extends GrpcGatewayHandler(channel, printer)(ec) {",
         s"""override val name: String = "${service.getName}"""",
         s"private val stub = ${service.getName}Grpc.stub(channel)"
       )
